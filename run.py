@@ -1,3 +1,5 @@
+from os import remove
+
 from PyQt6.QtWidgets import QApplication
 
 from app.interface import UiRelief

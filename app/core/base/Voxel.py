@@ -49,7 +49,7 @@ class VoxelABC(ABC):
         return self.len
 
 
-class VoxelDB(VoxelABC):
+class Voxel(VoxelABC):
     """
     Воксель связанный с базой данных
     """

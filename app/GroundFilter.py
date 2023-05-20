@@ -1,6 +1,5 @@
 import logging
 import os
-import sqlite3
 from pathlib import Path
 
 from sqlalchemy import and_, select
@@ -54,7 +53,7 @@ class GroundFilter:
                 PointFilterMaxV(self.scan, dem_model, self.max_v).filter_scan()
             dem_model.delete_model()
             yield 1
-        self.scan.save_scan_in_file(f"{os.path.join(base_dir, self.scan.scan_name)}_ground_points.txt")
+        self.save_ground_scan(self.scan, f"{os.path.join(base_dir, self.scan.scan_name)}_ground_points.txt")
         self.save_not_ground_scan(self.scan, f"{os.path.join(base_dir, self.scan.scan_name)}_not_ground_points.txt")
         engine.dispose()
         os.remove(os.path.join(".", DATABASE_NAME))
@@ -64,6 +63,20 @@ class GroundFilter:
         with open(path, "a", encoding="utf-8") as file:
             data = f"№:{n+1}\tvm_name:{vm.vm_name}\tscan_len:{self.scan.len}\tMSE:{pfm.MSE:.4f}\tMedian:{pfm.median:.4f}\n"
             file.write(data)
+
+    def save_ground_scan(self, scan, file_name):
+        select_ = select(Tables.points_db_table). \
+            join(Tables.points_scans_db_table, Tables.points_scans_db_table.c.point_id == Tables.points_db_table.c.id). \
+            where(and_(self.scan.id == Tables.points_scans_db_table.c.scan_id,
+                       Tables.points_scans_db_table.c.is_active == True))
+        with open(file_name, "w", encoding="UTF-8") as file:
+            with engine.connect() as db_connection:
+                db_points_data = db_connection.execute(select_)
+                for row in db_points_data:
+                    point = Point.parse_point_from_db_row(row)
+                    point_line = f"{point.X} {point.Y} {point.Z} {point.R} {point.G} {point.B}\n"
+                    file.write(point_line)
+        self.logger.info(f"Сохранение скана {scan} в файл {file_name} завершено")
 
     def save_not_ground_scan(self, scan, file_name):
         select_ = select(Tables.points_db_table). \

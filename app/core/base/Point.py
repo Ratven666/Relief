@@ -1,11 +1,7 @@
-from abc import ABC
-
-
-class PointABC(ABC):
+class Point:
     """
-    Абстрактный класс точки
+    Класс точки
     """
-
     __slots__ = ["id", "X", "Y", "Z", "R", "G", "B"]
 
     def __init__(self, X, Y, Z, R=0, G=0, B=0, id_=None):
@@ -20,13 +16,6 @@ class PointABC(ABC):
 
     def __repr__(self):
         return f"{self.__class__.__name__} [id: {self.id}]"
-
-
-class Point(PointABC):
-    """
-    Класс точки
-    """
-    __slots__ = []
 
     @classmethod
     def parse_point_from_db_row(cls, row: tuple):

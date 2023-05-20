@@ -9,7 +9,7 @@ class ScanTxtParser(ScanParserABC):
         4.2517 -14.2273 33.4113 208 195 182 -0.023815 -0.216309 0.976035
           X        Y       Z     R   G   B      nX nY nZ (не обязательны и пока игнорируются)
     """
-    __supported_file_extension__ = [".txt"]
+    __supported_file_extension__ = [".txt", ".ascii"]
 
     def __init__(self, chunk_count=POINTS_CHUNK_COUNT):
         self.__chunk_count = chunk_count

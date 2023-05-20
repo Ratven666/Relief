@@ -272,13 +272,3 @@ class UiRelief(QWidget):
         self.label_7.setText(_translate("Relief", "Фильтруемый\n"
                                                   "скан:"))
         self.start_button.setText(_translate("Relief", "Запуск фильтрации"))
-
-
-# if __name__ == "__main__":
-#     import sys
-#
-#     app = QApplication(sys.argv)
-#     Form = QWidget()
-#     ui = UiRelief()
-#     ui.show()
-#     sys.exit(app.exec())

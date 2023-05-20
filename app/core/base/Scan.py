@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy import delete, select, insert
+from sqlalchemy import select, insert
 
 from app.core.CONFIG import POINTS_CHUNK_COUNT
-from app.core.base.Point import PointABC
 from app.core.db.start_db import Tables, engine
 from app.core.utils.ScanIterator import ScanIterator
 from app.core.utils.ScanLoader import ScanLoader
-from app.core.utils.ScanTXTSaver import ScanTXTSaver
 from app.core.utils.ScanTxtParser import ScanTxtParser
 
 
@@ -55,22 +53,6 @@ class Scan(ScanABC):
         """
         return iter(ScanIterator(self))
 
-    def delete_scan(self, db_connection=None):
-        """
-        Удаляет запись скана из БД
-        :param scan_id: id скана который требуется удалить из БД
-        :param db_connection: Открытое соединение с БД
-        :return: None
-        """
-        stmt = delete(Tables.scans_db_table).where(Tables.scans_db_table.c.id == self.id)
-        if db_connection is None:
-            with engine.connect() as db_connection:
-                db_connection.execute(stmt)
-                db_connection.commit()
-        else:
-            db_connection.execute(stmt)
-            db_connection.commit()
-
     def load_scan_from_file(self, file_name,
                             scan_loader=ScanLoader(scan_parser=ScanTxtParser(chunk_count=POINTS_CHUNK_COUNT))):
         """
@@ -84,9 +66,6 @@ class Scan(ScanABC):
         :return: None
         """
         scan_loader.load_data(self, file_name)
-
-    def save_scan_in_file(self, file_name=None, scan_saver=ScanTXTSaver()):
-        scan_saver.save_scan(self, file_name)
 
     @classmethod
     def get_scan_from_id(cls, scan_id: int):
@@ -157,19 +136,6 @@ class ScanLite(ScanABC):
 
     def __len__(self):
         return len(self.__points)
-
-    def add_point(self, point):
-        """
-        Добавляет точку в скан
-        :param point: объект класса Point
-        :return: None
-        """
-        if isinstance(point, PointABC):
-            self.__points.append(point)
-            self.len += 1
-        else:
-            raise TypeError(f"Можно добавить только объект точки. "
-                             f"Переданно - {type(point)}, {point}")
 
     @classmethod
     def create_from_another_scan(cls, scan, copy_with_points=True):
