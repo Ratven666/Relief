@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from PyQt6 import QtCore
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget, QFileDialog, QSlider, QMessageBox, QLabel, QGridLayout, QVBoxLayout, QSpacerItem, \
     QTextEdit, QToolButton, QHBoxLayout, QSpinBox, QProgressBar, QPushButton, QSizePolicy
 
@@ -22,6 +23,7 @@ class UiRelief(QWidget):
         self.n_counter_slider.valueChanged.connect(self.sliders_update)
         self.grid_size_slider.valueChanged.connect(self.sliders_update)
         self.start_button.clicked.connect(self.start_filtering)
+        self.setWindowIcon(QIcon('icon.ico'))
         self.progress = 0
 
     def start_filtering(self):
