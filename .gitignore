@@ -128,3 +128,7 @@ dmypy.json
 src/
 
 test.py
+
+*.sqlite
+
+*.sqlite-journal

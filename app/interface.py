@@ -4,15 +4,17 @@ from PyQt6 import QtCore
 from PyQt6.QtWidgets import QWidget, QFileDialog, QSlider, QMessageBox, QLabel, QGridLayout, QVBoxLayout, QSpacerItem, \
     QTextEdit, QToolButton, QHBoxLayout, QSpinBox, QProgressBar, QPushButton, QSizePolicy
 
+from app.GroundFilter import GroundFilter
+
 
 class UiRelief(QWidget):
 
     def __init__(self):
         super().__init__()
         self.setupUi()
-        self.k = None
-        self.n = None
-        self.step = None
+        self.k = self.k_value_slider.value()
+        self.n = self.n_counter_slider.value()
+        self.step = self.grid_size_slider.value()
         self.filepath = None
         self.file_path_button.clicked.connect(self.open_file_dialog)
         self.file_path_text.textChanged.connect(self.filepath_from_text_line)
@@ -20,20 +22,25 @@ class UiRelief(QWidget):
         self.n_counter_slider.valueChanged.connect(self.sliders_update)
         self.grid_size_slider.valueChanged.connect(self.sliders_update)
         self.start_button.clicked.connect(self.start_filtering)
+        self.progress = 0
 
     def start_filtering(self):
-        print("!")
         self.start_button.setEnabled(False)
-        value = 0
-        for _ in range(150000):
-            value += 1 / 150000 * 100
-            print(value)
-            self.progressBar.setProperty("value", round(value))
+        self.progress = 0
+        self.progressBar.setProperty("value", 0)
+        gf = GroundFilter(self.filepath, self.n, self.step, self.k)
+        self.update_progress_bar()
+        for _ in gf.filter_scan():
+            self.update_progress_bar()
         dig = QMessageBox(self)
         dig.setWindowTitle("Result")
         dig.setText("Фильтрация скана завершена!")
         dig.setIcon(QMessageBox.Icon.Information)
         dig.exec()
+
+    def update_progress_bar(self):
+        self.progress += 1 / (self.n+2) * 100
+        self.progressBar.setProperty("value", round(self.progress))
 
     def filepath_from_text_line(self):
         self.filepath = self.file_path_text.toPlainText()
@@ -124,8 +131,8 @@ class UiRelief(QWidget):
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.k_value_slider = QSlider(parent=self)
         self.k_value_slider.setMinimum(1)
-        self.k_value_slider.setMaximum(5)
-        self.k_value_slider.setProperty("value", 3)
+        self.k_value_slider.setMaximum(6)
+        self.k_value_slider.setProperty("value", 4)
         self.k_value_slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.k_value_slider.setObjectName("k_value_slider")
         self.k_value_slider.setTickPosition(QSlider.TickPosition.TicksAbove)
@@ -161,9 +168,9 @@ class UiRelief(QWidget):
         self.gridLayout.addLayout(self.horizontalLayout, 0, 1, 1, 1)
         self.n_counter_slider = QSlider(parent=self)
         self.n_counter_slider.setMinimum(1)
-        self.n_counter_slider.setMaximum(10)
-        self.n_counter_slider.setProperty("value", 5)
-        self.n_counter_slider.setSliderPosition(5)
+        self.n_counter_slider.setMaximum(30)
+        self.n_counter_slider.setProperty("value", 10)
+        self.n_counter_slider.setSliderPosition(10)
         self.n_counter_slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.n_counter_slider.setObjectName("n_counter_slider")
         self.n_counter_slider.setTickPosition(QSlider.TickPosition.TicksAbove)
@@ -189,8 +196,8 @@ class UiRelief(QWidget):
         self.verticalLayout.addItem(spacerItem5)
         self.n_slider_box = QSpinBox(parent=self)
         self.n_slider_box.setMinimum(1)
-        self.n_slider_box.setMaximum(10)
-        self.n_slider_box.setProperty("value", 5)
+        self.n_slider_box.setMaximum(30)
+        self.n_slider_box.setProperty("value", 10)
         self.n_slider_box.setObjectName("n_slider_box")
         self.verticalLayout.addWidget(self.n_slider_box)
         self.gridLayout_4.addLayout(self.verticalLayout, 3, 2, 1, 1)
@@ -201,8 +208,8 @@ class UiRelief(QWidget):
         self.verticalLayout_2.addItem(spacerItem6)
         self.k_value_box = QSpinBox(parent=self)
         self.k_value_box.setMinimum(1)
-        self.k_value_box.setMaximum(5)
-        self.k_value_box.setProperty("value", 3)
+        self.k_value_box.setMaximum(6)
+        self.k_value_box.setProperty("value", 4)
         self.k_value_box.setObjectName("k_value_box")
         self.verticalLayout_2.addWidget(self.k_value_box)
         self.gridLayout_4.addLayout(self.verticalLayout_2, 2, 2, 1, 1)

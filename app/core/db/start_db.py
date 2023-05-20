@@ -8,9 +8,9 @@ from app.core.logs.console_log_config import console_logger
 from app.core.CONFIG import DATABASE_NAME, LOGGER
 from app.core.db.TableInitializer import TableInitializer
 
-path = os.path.join("..", DATABASE_NAME)
-
+path = os.path.join(".", DATABASE_NAME)
 engine = create_engine(f'sqlite:///{path}')
+
 
 db_metadata = MetaData()
 
@@ -27,5 +27,6 @@ def create_db():
     db_is_created = os.path.exists(path)
     if not db_is_created:
         db_metadata.create_all(engine)
+        engine.dispose()
     else:
         logger.info("Такая БД уже есть!")

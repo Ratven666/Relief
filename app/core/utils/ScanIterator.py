@@ -70,7 +70,7 @@ class SqlLiteScanIterator:
     Реализован через стандартную библиотеку sqlite3
     """
     def __init__(self, scan):
-        self.__path = os.path.join("..", DATABASE_NAME)
+        self.__path = os.path.join(".", DATABASE_NAME)
         self.scan_id = scan.id
         self.cursor = None
         self.generator = None

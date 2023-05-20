@@ -48,9 +48,11 @@ class GroundFilter:
             else:
                 PointFilterMaxV(self.scan, dem_model, self.max_v).filter_scan()
             dem_model.delete_model()
+            yield 1
         self.scan.save_scan_in_file(f"{os.path.join(base_dir, self.scan.scan_name)}_ground_points.txt")
         engine.dispose()
-        os.remove(os.path.join("..", DATABASE_NAME))
+        os.remove(os.path.join(".", DATABASE_NAME))
+        yield 1
 
     def write_mse(self, path, pfm, n, vm):
         with open(path, "a", encoding="utf-8") as file:
