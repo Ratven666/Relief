@@ -261,9 +261,9 @@ class UiRelief(QWidget):
         self.label_10.setText(_translate("Relief", "Размер\n"
                                                    "ячейки, м:"))
         self.label_3.setText(_translate("Relief", "Количество\n"
-                                                  "иттераций:"))
+                                                  "итераций:"))
         self.file_path_button.setText(_translate("Relief", "..."))
-        self.label_4.setText(_translate("Relief", "Агресивно"))
+        self.label_4.setText(_translate("Relief", "Агрессивно"))
         self.label_5.setText(_translate("Relief", "Аккуратно"))
         self.label.setText(_translate("Relief", "Быстро"))
         self.label_2.setText(_translate("Relief", "Долго"))

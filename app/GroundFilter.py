@@ -16,6 +16,7 @@ from app.core.models.VoxelModel import VoxelModel
 
 class GroundFilter:
     logger = logging.getLogger(LOGGER)
+
     def __init__(self, path, n, step, k_value, n_vm=4, max_v=1):
         create_db()
         self.path = Path(path)

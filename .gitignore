@@ -132,3 +132,11 @@ test.py
 *.sqlite
 
 *.sqlite-journal
+
+run.build/
+
+run.dist/
+
+run.onefile-build/static_src/
+
+run.onefile-build/
